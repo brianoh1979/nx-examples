@@ -1,15 +1,25 @@
 {
   "npmScope": "nx-example",
   "implicitDependencies": {
-    "angular.json": "*",
-    "package.json": "*",
-    "tsconfig.json": "*",
-    "tslint.json": "*",
-    "nx.json": "*"
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tslint.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "accessToken": "YmM1MGMwMTUtNzAyYi00ZjM4LWExNGUtZDM2ZjYyNzNiODAxfHJlYWQ=",
+        "cacheableOperations": ["build", "lint", "test"]
+      }
+    }
   },
   "projects": {
     "products-e2e": {
-      "tags": ["scope:products", "type:e2e"]
+      "tags": ["scope:products", "type:e2e"],
+      "implicitDependencies": ["products"]
     },
     "products": {
       "tags": ["type:app", "scope:products"],
@@ -20,7 +30,8 @@
       "implicitDependencies": ["shared-assets", "shared-styles"]
     },
     "cart-e2e": {
-      "tags": ["scope:cart", "type:e2e"]
+      "tags": ["scope:cart", "type:e2e"],
+      "implicitDependencies": ["cart"]
     },
     "shared-product-types": {
       "tags": ["type:types", "scope:shared"]
