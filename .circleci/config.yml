@@ -80,7 +80,7 @@ jobs:
       - checkout
       - run: echo "integration-test step"
   install:
-    <<: *defaults
+   <<: *defaults
     steps:
       - checkout
       - restore_cache:
