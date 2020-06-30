@@ -202,8 +202,7 @@ workflows:
             - setup-cloud
       - elastic-indexes:
           requires: ['deploy-ui']
-      - elastic-indexes2:
-          adhoc: false
+      - elastic-indexes2
       - deploy-staging-custom:
           filters:
             branches:
