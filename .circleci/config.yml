@@ -182,15 +182,9 @@ workflows:
     jobs:
       - install
       - assemble-custom:
-#          build_directory: ..
           requires: ['install']
-#          root_directory: .
-#          service: dataflow
-#          working_directory: .
       - test-custom:
           requires: ['install']
-#          root_directory: .
-#          working_directory: .
       - sonar-everon:
           requires: ['install']
       - setup-cloud:
@@ -202,40 +196,22 @@ workflows:
               ignore: ['master']
           requires: ['assemble-custom']
       - deploy-all-services:
-  #        name: deploy
-  #        command: echo "deploy-all-services step"
           requires: ['setup-cloud']
       - deploy-ui:
-  #        name: deploy-ui
-  #        command: echo "deploy-ui step"
           requires:
             - setup-cloud
       - elastic-indexes:
-  #        name: elastic-indexes
-  #        command: echo "elastic-indexes-test"
           requires: ['deploy-ui']
       - elastic-indexes2:
           adhoc: false
-  #        command: echo "elastic-indexes-test2" 
-  #        name: elastic-indexes-staging
       - deploy-staging-custom:
-  #        name: deploy-staging-dataflow
           filters:
             branches:
               only: ['master']
-  #        command: echo "deploy-staging-custom step" 
- #         root_directory: .
- #         working_directory: .
-      - integration-staging:
- #         name: integration-staging
- #         command: echo "integration-staging command"
- #         root_directory: .
- #         working_directory: .
+      - integration-staging
       - e2e-test-chrome:
           requires: ['install']
-      - integration-test:
- #         name: integration-test
- #         command: echo "integration-test step"
+      - integration-test
       - deploy-production-custom:
           requires: 
             - assemble-custom
