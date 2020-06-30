@@ -68,7 +68,7 @@ jobs:
       - restore_cache:
           <<: *yarn_cache
       - run: yarn format:check ${AFFECTED_ARGS}
-  sonar-evron:
+  sonar-everon:
     <<: *defaults
     steps:
       - checkout
