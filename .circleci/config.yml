@@ -147,15 +147,15 @@ workflows:
     jobs:
       - install
       - assemble-custom:
-          build_directory: ..
+#          build_directory: ..
           requires: ['install']
-          root_directory: .
-          service: dataflow
-          working_directory: .
+#          root_directory: .
+#          service: dataflow
+#          working_directory: .
       - test-custom:
           requires: ['install']
-          root_directory: .
-          working_directory: .
+#          root_directory: .
+#          working_directory: .
       - sonar-everon:
           requires: ['install']
       - setup-cloud:
@@ -189,13 +189,13 @@ workflows:
             branches:
               only: ['master']
           command: echo "deploy-staging-custom step" 
-          root_directory: .
-          working_directory: .
+ #         root_directory: .
+ #         working_directory: .
       - integration-staging:
           name: integration-staging
           command: echo "integration-staging command"
-          root_directory: .
-          working_directory: .
+ #         root_directory: .
+ #         working_directory: .
       - e2e-test-chrome:
           requires: ['install']
       - integration-test:
