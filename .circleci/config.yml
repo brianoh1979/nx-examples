@@ -216,8 +216,8 @@ workflows:
 #          requires:
 #      - e2e-ff-comets
 #      - e2e-cr-comets
-      - integration-staging
-          name: integrationstaging
+      - integration-staging:
+          name: integration-staging
           command: echo "integration-staging command"
           root_directory: .
           working_directory: .
