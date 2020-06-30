@@ -57,7 +57,7 @@ jobs:
           paths:
             - ~/.cache
             - node_modules
-  check-formatting:
+  assemble-custom:
     <<: *defaults
     steps:
       - checkout
@@ -68,7 +68,7 @@ jobs:
       - restore_cache:
           <<: *yarn_cache
       - run: yarn format:check ${AFFECTED_ARGS}
-  lint:
+  sonar-evron:
     <<: *defaults
     steps:
       - checkout
@@ -80,7 +80,7 @@ jobs:
           <<: *yarn_cache
       - run: ./node_modules/.bin/nx workspace-lint
       - run: yarn affected:lint ${AFFECTED_ARGS} --parallel
-  build:
+  setup-cloud:
     <<: *defaults
     steps:
       - checkout
@@ -97,7 +97,7 @@ jobs:
             - dist
       - store_artifacts:
           path: dist
-  test:
+  test-custom:
     <<: *defaults
     steps:
       - checkout
@@ -108,7 +108,7 @@ jobs:
       - restore_cache:
           <<: *yarn_cache
       - run: yarn affected:test -- ${AFFECTED_ARGS} --parallel -- --ci --code-coverage
-  e2e:
+  e2e-test-chrome:
     <<: *defaults
     steps:
       - checkout
@@ -122,7 +122,7 @@ jobs:
       - store_artifacts:
           path: dist/cypress
 
-  deploy:
+  deploy-production-custom:
     <<: *defaults
     steps:
       - checkout
@@ -143,32 +143,160 @@ jobs:
 
 workflows:
   version: 2
-  pr_check:
+#  pr_check:
+#    jobs:
+#      - install
+#      - check-formatting:
+#          requires:
+#            - install
+#      - lint:
+#          requires:
+#            - install
+#      - test:
+#          requires:
+#            - install
+#      - build:
+#          requires:
+#            - install
+#      - e2e:
+#          requires:
+#            - install
+#      - deploy:
+#          filters:
+#            branches:
+#              only:
+#                - master
+#          requires:
+#            - check-formatting
+#            - lint
+#            - test
+#            - build
+#            - e2e
+
+  dataflow:
+#    when: << pipeline.parameters.dataflow >>
     jobs:
       - install
-      - check-formatting:
-          requires:
-            - install
-      - lint:
-          requires:
-            - install
-      - test:
-          requires:
-            - install
-      - build:
-          requires:
-            - install
-      - e2e:
-          requires:
-            - install
-      - deploy:
+      - assemble-custom:
+          build_directory: ..
+#          command: echo "Hello World 1!"
+#          name: assemble
+          requires: ['install']
+          root_directory: .
+          service: dataflow
+          working_directory: .
+      - test-custom:
+ #         command: dataflow:test
+ #         name: test
+          requires: ['install']
+          root_directory: .
+ #         service: dataflow
+          working_directory: .
+      - sonar-everon:
+ #         name: sonar
+ #         command: echo "sonar-evron step"
+          requires: ['install']
+      - setup-cloud:
+          requires: ['install']
+ #         project: test
+      - use-adhoc:
+          type: approval
           filters:
             branches:
-              only:
-                - master
+              ignore: ['master']
+          requires: ['assemble-custom']
+      - deploy-all-services:
+          name: deploy
+          command: echo "deploy-all-services step"
+          requires: ['setup-cloud']
+      - deploy-ui:
+ #         host: test.everon.io
+          name: deploy-ui
+          command: echo "deploy-ui step"
+ #         project: everon-test
           requires:
-            - check-formatting
-            - lint
-            - test
-            - build
-            - e2e
+            - setup-cloud
+      - elastic-indexes:
+          name: elastic-indexes
+          command: echo "elastic-indexes-test"
+          requires: ['deploy-ui']
+ #         host: test.everon.io
+      - elastic-indexes2:
+          adhoc: false
+ #         host: staging.everon.io
+          command: echo "elastic-indexes-test2" 
+          name: elastic-indexes-staging
+ #         requires: ['deploy-staging-dataflow']
+ #     - queue:
+ #         requires: ['test']
+      - deploy-staging-custom:
+          name: deploy-staging-dataflow
+          filters:
+            branches:
+              only: ['master']
+ #         requires: ['queue']
+ #         service: dataflow
+          command: echo "deploy-staging-custom step" 
+          root_directory: .
+          working_directory: .
+#      - deploy-production-custom:
+#          name: deploy-production-dataflow
+#          filters:
+#            branches:
+#              only: ['master']
+#          requires:
+#      - e2e-ff-comets
+#      - e2e-cr-comets
+      - integration-staging
+#          service: dataflow
+          name: integration-staging
+          command: echo "integration-staging command"
+          root_directory: .
+          working_directory: .
+      - # Adhoc e2e tests
+#        create-identity-provider-environment:
+#          name: create-identity-provider-environment
+#          requires: ['deploy']
+      - e2e-test-chrome:
+#          host: test.everon.io
+#          name: e2e-comets-cr
+          requires: ['install']
+#          suite: comets
+#      - e2e-test-firefox:
+#          host: test.everon.io
+#          name: e2e-comets-ff
+#          requires: ['create-identity-provider-environment', 'elastic-indexes-test']
+#          suite: comets
+      - integration-test:
+          name: integration-test
+          command: echo "integration-test step"
+ #         host: test.everon.io
+ #         requires: ['create-identity-provider-environment', 'elastic-indexes-test']
+ #     - e2e-test-firefox:
+ #         host: staging.everon.io
+ #         name: e2e-ff-comets
+ #         requires: ['elastic-indexes-staging']
+ #         suite: comets
+ #         filters:
+ #           branches:
+ #             only: ['master']
+ #     - e2e-test-chrome:
+ #         host: staging.everon.io
+ #         name: e2e-cr-comets
+ #         requires: ['elastic-indexes-staging']
+ #         suite: comets
+ #         filters:
+ #           branches:
+ #             only: ['master']
+      - deploy-production-custom:
+  #        name: integration-staging
+  #        host: staging.everon.io
+          requires: 
+            - assemble-custom
+            - sonar-everon
+            - test-custom
+            - setup-cloud
+            - e2e-test-chrome
+          filters:
+            branches:
+              only: ['master']
