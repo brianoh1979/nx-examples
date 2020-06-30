@@ -44,6 +44,41 @@ yarn_install: &yarn_install
   command: yarn install --frozen-lockfile --non-interactive
 
 jobs:
+  deploy-all-services:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: echo "deploy-all-services step"
+  deploy-ui:
+   <<: *defaults
+    steps:
+      - checkout
+      - run: echo "deploy-ui step"
+  elastic-indexes:
+   <<: *defaults
+    steps:
+      - checkout
+      - run: echo "elastic-indexes step"
+  elastic-indexes2:
+   <<: *defaults
+    steps:
+      - checkout
+      - run: echo "elastic-indexes2 step"
+  deploy-staging-custom:
+   <<: *defaults
+    steps:
+      - checkout
+      - run: echo "deploy-staging-custom step"
+  integration-staging:
+   <<: *defaults
+    steps:
+      - checkout
+      - run: echo "integration-staging step"
+  integration-test:
+   <<: *defaults
+    steps:
+      - checkout
+      - run: echo "integration-test step"
   install:
     <<: *defaults
     steps:
@@ -167,40 +202,40 @@ workflows:
               ignore: ['master']
           requires: ['assemble-custom']
       - deploy-all-services:
-          name: deploy
-          command: echo "deploy-all-services step"
+  #        name: deploy
+  #        command: echo "deploy-all-services step"
           requires: ['setup-cloud']
       - deploy-ui:
-          name: deploy-ui
-          command: echo "deploy-ui step"
+  #        name: deploy-ui
+  #        command: echo "deploy-ui step"
           requires:
             - setup-cloud
       - elastic-indexes:
-          name: elastic-indexes
-          command: echo "elastic-indexes-test"
+  #        name: elastic-indexes
+  #        command: echo "elastic-indexes-test"
           requires: ['deploy-ui']
       - elastic-indexes2:
           adhoc: false
-          command: echo "elastic-indexes-test2" 
-          name: elastic-indexes-staging
+  #        command: echo "elastic-indexes-test2" 
+  #        name: elastic-indexes-staging
       - deploy-staging-custom:
-          name: deploy-staging-dataflow
+  #        name: deploy-staging-dataflow
           filters:
             branches:
               only: ['master']
-          command: echo "deploy-staging-custom step" 
+  #        command: echo "deploy-staging-custom step" 
  #         root_directory: .
  #         working_directory: .
       - integration-staging:
-          name: integration-staging
-          command: echo "integration-staging command"
+ #         name: integration-staging
+ #         command: echo "integration-staging command"
  #         root_directory: .
  #         working_directory: .
       - e2e-test-chrome:
           requires: ['install']
       - integration-test:
-          name: integration-test
-          command: echo "integration-test step"
+ #         name: integration-test
+ #         command: echo "integration-test step"
       - deploy-production-custom:
           requires: 
             - assemble-custom
