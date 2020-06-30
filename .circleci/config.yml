@@ -148,26 +148,18 @@ workflows:
       - install
       - assemble-custom:
           build_directory: ..
-#          command: echo "Hello World 1!"
-#          name: assemble
           requires: ['install']
           root_directory: .
           service: dataflow
           working_directory: .
       - test-custom:
- #         command: dataflow:test
- #         name: test
           requires: ['install']
           root_directory: .
- #         service: dataflow
           working_directory: .
       - sonar-everon:
- #         name: sonar
- #         command: echo "sonar-evron step"
           requires: ['install']
       - setup-cloud:
           requires: ['install']
- #         project: test
       - use-adhoc:
           type: approval
           filters:
@@ -179,78 +171,37 @@ workflows:
           command: echo "deploy-all-services step"
           requires: ['setup-cloud']
       - deploy-ui:
- #         host: test.everon.io
           name: deploy-ui
           command: echo "deploy-ui step"
- #         project: everon-test
           requires:
             - setup-cloud
       - elastic-indexes:
           name: elastic-indexes
           command: echo "elastic-indexes-test"
           requires: ['deploy-ui']
- #         host: test.everon.io
       - elastic-indexes2:
           adhoc: false
- #         host: staging.everon.io
           command: echo "elastic-indexes-test2" 
           name: elastic-indexes-staging
- #         requires: ['deploy-staging-dataflow']
- #     - queue:
- #         requires: ['test']
       - deploy-staging-custom:
           name: deploy-staging-dataflow
           filters:
             branches:
               only: ['master']
- #         requires: ['queue']
- #         service: dataflow
           command: echo "deploy-staging-custom step" 
           root_directory: .
           working_directory: .
-#      - integration-staging:
-#          name: integration-staging
-#          command: echo "integration-staging command"
-#          root_directory: .
-#          working_directory: .
-#      - # Adhoc e2e tests
-#        create-identity-provider-environment:
-#          name: create-identity-provider-environment
-#          requires: ['deploy']
+      - integration-staging:
+          name: integration-staging
+          command: echo "integration-staging command"
+          root_directory: .
+          working_directory: .
       - e2e-test-chrome:
-#          host: test.everon.io
-#          name: e2e-comets-cr
           requires: ['install']
-#          suite: comets
-#      - e2e-test-firefox:
-#          host: test.everon.io
-#          name: e2e-comets-ff
-#          requires: ['create-identity-provider-environment', 'elastic-indexes-test']
-#          suite: comets
       - integration-test:
           name: integration-test
           command: echo "integration-test step"
- #         host: test.everon.io
- #         requires: ['create-identity-provider-environment', 'elastic-indexes-test']
- #     - e2e-test-firefox:
- #         host: staging.everon.io
- #         name: e2e-ff-comets
- #         requires: ['elastic-indexes-staging']
- #         suite: comets
- #         filters:
- #           branches:
- #             only: ['master']
- #     - e2e-test-chrome:
- #         host: staging.everon.io
- #         name: e2e-cr-comets
- #         requires: ['elastic-indexes-staging']
- #         suite: comets
- #         filters:
- #           branches:
- #             only: ['master']
       - deploy-production-custom:
-  #        name: integration-staging
-  #        host: staging.everon.io
           requires: 
             - assemble-custom
             - sonar-everon
