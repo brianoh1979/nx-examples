@@ -143,38 +143,7 @@ jobs:
 
 workflows:
   version: 2
-#  pr_check:
-#    jobs:
-#      - install
-#      - check-formatting:
-#          requires:
-#            - install
-#      - lint:
-#          requires:
-#            - install
-#      - test:
-#          requires:
-#            - install
-#      - build:
-#          requires:
-#            - install
-#      - e2e:
-#          requires:
-#            - install
-#      - deploy:
-#          filters:
-#            branches:
-#              only:
-#                - master
-#          requires:
-#            - check-formatting
-#            - lint
-#            - test
-#            - build
-#            - e2e
-
   dataflow:
-#    when: << pipeline.parameters.dataflow >>
     jobs:
       - install
       - assemble-custom:
@@ -248,7 +217,6 @@ workflows:
 #      - e2e-ff-comets
 #      - e2e-cr-comets
       - integration-staging
-#          service: dataflow
           name: integration-staging
           command: echo "integration-staging command"
           root_directory: .
