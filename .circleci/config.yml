@@ -50,37 +50,37 @@ jobs:
       - checkout
       - run: echo "deploy-all-services step"
   deploy-ui:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: echo "deploy-ui step"
   elastic-indexes:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: echo "elastic-indexes step"
   elastic-indexes2:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: echo "elastic-indexes2 step"
   deploy-staging-custom:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: echo "deploy-staging-custom step"
   integration-staging:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: echo "integration-staging step"
   integration-test:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: echo "integration-test step"
   install:
-   <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
