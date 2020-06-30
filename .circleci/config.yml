@@ -208,19 +208,11 @@ workflows:
           command: echo "deploy-staging-custom step" 
           root_directory: .
           working_directory: .
-#      - deploy-production-custom:
-#          name: deploy-production-dataflow
-#          filters:
-#            branches:
-#              only: ['master']
-#          requires:
-#      - e2e-ff-comets
-#      - e2e-cr-comets
-      - integration-staging:
-          name: integration-staging
-          command: echo "integration-staging command"
-          root_directory: .
-          working_directory: .
+#      - integration-staging:
+#          name: integration-staging
+#          command: echo "integration-staging command"
+#          root_directory: .
+#          working_directory: .
 #      - # Adhoc e2e tests
 #        create-identity-provider-environment:
 #          name: create-identity-provider-environment
