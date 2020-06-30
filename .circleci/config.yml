@@ -217,11 +217,11 @@ workflows:
 #      - e2e-ff-comets
 #      - e2e-cr-comets
       - integration-staging
-          name: integration-staging
+          name: integrationstaging
           command: echo "integration-staging command"
           root_directory: .
           working_directory: .
-      - # Adhoc e2e tests
+#      - # Adhoc e2e tests
 #        create-identity-provider-environment:
 #          name: create-identity-provider-environment
 #          requires: ['deploy']
