@@ -104,7 +104,7 @@ jobs:
       - restore_cache:
           <<: *yarn_cache
       - run: yarn format:check ${AFFECTED_ARGS}
-  sonar-babylon:
+  sonar-monday:
     <<: *defaults
     steps:
       - checkout
@@ -186,7 +186,7 @@ workflows:
           requires: ['install']
       - test-custom:
           requires: ['install']
-      - sonar-babylon:
+      - sonar-monday:
           requires: ['install']
       - setup-cloud:
           requires: ['install']
@@ -215,7 +215,7 @@ workflows:
       - deploy-production-custom:
           requires: 
             - assemble-custom
-            - sonar-babylon
+            - sonar-monday
             - test-custom
             - setup-cloud
             - e2e-test-chrome
