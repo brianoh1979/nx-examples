@@ -21,6 +21,6 @@ describe('products', () => {
       .first()
       .click();
 
-    cy.url().should('include', '/product/2');
+    cy.url().should('include', '/product/1');
   });
 });
